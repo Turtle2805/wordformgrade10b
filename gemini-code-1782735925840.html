@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giáo viên tạo: Ms Lê Hằng English</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --correct-color: #00D26A;
+            --wrong-color: #FF4757;
+            --text-color: #2D3436;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #8854C0, #FDCB6E, #00C9A7, #FF7675);
+            background-size: 400% 400%;
+            animation: gradientAnimation 12s ease infinite;
+            padding: 20px 10px;
+            color: var(--text-color);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M9 20 L15 20 L12 12 Z M40 40 A 4 4 0 1 0 40 32 A 4 4 0 1 0 40 40 M25 10 Q 30 5 35 10 T 45 10' fill='none' stroke='%23ffffff' stroke-width='2' stroke-opacity='0.15'/%3E%3Ccircle cx='50' cy='15' r='3' fill='%23ffffff' fill-opacity='0.15'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            animation: floatingBackground 25s linear infinite;
+        }
+
+        @keyframes floatingBackground {
+            from { background-position: 0 0; }
+            to { background-position: 100px 100px; }
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        header h5 {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.95);
+            background: rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+        }
+
+        .alert-box {
+            background: #FFEAA7;
+            border-left: 6px solid #D63031;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .alert-title {
+            color: #D63031;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .alert-text {
+            font-size: 0.92rem;
+            font-weight: 600;
+            line-height: 1.5;
+            color: #2D3436;
+        }
+
+        .quiz-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 0px rgba(0, 0, 0, 0.06), 0 12px 24px rgba(0,0,0,0.06);
+            border: 2px solid rgba(0,0,0,0.03);
+            transition: transform 0.2s ease;
+        }
+
+        .shake-animation {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .question-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #2D3436;
+            line-height: 1.5;
+        }
+
+        .question-number {
+            background: #8854C0;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-right: 6px;
+            display: inline-block;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #FFFFFF;
+            border: 2px solid #E0E0E0;
+            border-bottom: 5px solid #E0E0E0;
+            border-radius: 16px;
+            padding: 12px 16px;
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            color: #4A4A4A;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            transform: scale(1.015);
+            background-color: #F8F9FA;
+        }
+
+        .option-btn:active:not(.disabled) {
+            transform: translateY(3px);
+            border-bottom-width: 2px;
+        }
+
+        .option-btn.correct-choice {
+            background-color: #E8FAEF !important;
+            border-color: var(--correct-color) !important;
+            border-bottom: 5px solid #00A854 !important;
+            color: #00A854 !important;
+        }
+
+        .option-btn.wrong-choice {
+            background-color: #FFEBEB !important;
+            border-color: var(--wrong-color) !important;
+            border-bottom: 5px solid #CC3643 !important;
+            color: #CC3643 !important;
+        }
+
+        .option-btn.disabled {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .explanation-card {
+            margin-top: 15px;
+            background: #F8F5FF;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1.5px dashed #8854C0;
+            display: none;
+        }
+
+        .exp-section {
+            font-size: 0.92rem;
+            line-height: 1.5;
+            margin-bottom: 6px;
+            color: #444;
+        }
+        .exp-section:last-child { margin-bottom: 0; }
+        .exp-badge { font-weight: 700; color: #8854C0; }
+
+        .footer-action { text-align: center; margin: 30px 0 50px; }
+        .submit-btn {
+            background: #00C9A7; color: white; font-size: 1.2rem; font-weight: 700;
+            padding: 14px 45px; border: none; border-radius: 30px; border-bottom: 5px solid #009E82;
+            cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.15); transition: all 0.1s;
+        }
+        .submit-btn:hover { transform: scale(1.03); background: #00D9B3; }
+        .submit-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+        .overlay-popup {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); display: flex; align-items: center;
+            justify-content: center; z-index: 1000; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .overlay-popup.active { opacity: 1; pointer-events: auto; }
+        .popup-modal {
+            background: white; border-radius: 24px; padding: 25px; max-width: 450px;
+            width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            transform: scale(0.85); transition: transform 0.3s ease;
+        }
+        .overlay-popup.active .popup-modal { transform: scale(1); }
+        .score-display { font-size: 3.2rem; font-weight: 700; color: #8854C0; margin: 15px 0; }
+        .comment-display { font-size: 1rem; font-weight: 600; line-height: 1.5; color: #4A4A4A; margin-bottom: 20px; }
+        .close-btn { background: #8854C0; color: white; border: none; padding: 10px 25px; font-size: 0.95rem; font-weight: 700; border-radius: 12px; cursor: pointer; }
+        #canvas-confetti { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-confetti"></canvas>
+
+    <div class="container">
+        <header>
+            <h5>Giáo viên tạo: Ms Lê Hằng English</h5>
+        </header>
+
+        <div class="alert-box">
+            <div class="alert-title">⚠️ LỜI NHẮC CỰC KỲ QUAN TRỌNG ⚠️</div>
+            <div class="alert-text">
+                Chỉ có đọc kỹ giải thích ngay sau mỗi câu, sau đó ghi lại từ vựng/cấu trúc mới vào vở để học thì mới thực sự giỏi lên. Làm cho xong mà không đọc giải thích hay đọc qua loa không ghi chép thì chỉ tốn thời gian vô ích!<br>
+                <strong style="display:block; text-align:right; margin-top:5px; color:#2D3436;">* Kéo tới đâu, làm tới đó! *</strong>
+            </div>
+        </div>
+
+        <div id="quiz-wrapper"></div>
+
+        <div class="footer-action">
+            <button class="submit-btn" onclick="evaluateQuiz()">Nộp bài ✨</button>
+        </div>
+    </div>
+
+    <div class="overlay-popup" id="result-overlay">
+        <div class="popup-modal">
+            <h2>🎉 Kết Quả Bài Làm 🎉</h2>
+            <div class="score-display" id="final-score">0 / 50</div>
+            <div class="comment-display" id="teacher-comment">Lời khuyên...</div>
+            <button class="close-btn" onclick="resetQuiz()">Làm lại bài test 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const rawQuizDatabase = [
+            { id: 51, root: "EXPLAIN", text: "I have no excuses. My actions were _______.", opts: ["inexplicable", "explicable", "explanation", "explain"], ans: 0, trans: "Tôi không có gì để bào chữa cả. Hành động của tôi là không thể giải thích được.", meanings: ["A. inexplicable (adj): không thể giải thích được", "B. explicable (adj): có thể giải thích được", "C. explanation (n): sự giải thích", "D. explain (v): giải thích"], structure: "Vị trí đứng sau hệ động từ liên kết 'were' cần một tính từ bổ nghĩa cho chủ từ 'My actions'. Căn cứ vào vế trước 'I have no excuses' (Tôi không có gì bào chữa), tính từ mang nghĩa phủ định 'inexplicable' là hoàn toàn chính xác.", fault: "Tính từ khẳng định trái ngược logic lập luận, còn động từ và danh từ sai quy chuẩn ngữ pháp sau hệ từ ở đây." },
+            { id: 52, root: "PASSION", text: "The hero had a _______ love affair with the actress.", opts: ["passionate", "passion", "passionately", "passionless"], ans: 0, trans: "Nam chính đã có một mối tình mãnh liệt với nữ diễn viên.", meanings: ["A. passionate (adj): nồng nàn, mãnh liệt", "B. passion (n): niềm đam mê", "C. passionately (adv): một cách mãnh liệt", "D. passionless (adj): không có cảm xúc"], structure: "Nằm kẹp giữa mạo từ số ít 'a' và cụm danh từ 'love affair' nên vị trí này bắt buộc phải điền một tính từ bổ nghĩa tính chất.", fault: "Danh từ và trạng từ không đứng ở vị trí này để làm định ngữ trực tiếp bổ nghĩa danh từ." },
+            { id: 53, root: "REGARD", text: "I’ll resign if you continue to _______ everything I say.", opts: ["disregard", "regard", "regards", "regardless"], ans: 0, trans: "Tôi sẽ từ chức nếu bạn tiếp tục coi thường tất cả những gì tôi nói.", meanings: ["A. disregard (v): coi thường, phớt lờ", "B. regard (v): coi trọng, xem như", "C. regards (n/v số ít): lời chúc / quan tâm", "D. regardless (adv): bất chấp"], structure: "Áp dụng cấu trúc động từ nguyên thể: 'continue + to + V-inf'. Dựa vào ngữ cảnh tiêu cực hệ quả từ chức 'I'll resign', hành động của đối phương phải mang nghĩa tiêu cực là coi thường hoặc phớt lờ.", fault: "Động từ khẳng định 'regard' sai nghĩa logic, trạng từ không đi liền sau phân từ 'to' tạo lập vị ngữ hành động thường." },
+            { id: 54, root: "ADMIT", text: "_______ to the university is by examination only.", opts: ["Admission", "Admittance", "Admit", "Admissible"], ans: 0, trans: "Việc nhập học vào trường đại học chỉ thông qua hình thức thi tuyển.", meanings: ["A. Admission (n): sự nhận vào, quyền nhập học", "B. Admittance (n): quyền vào cửa (không gian vật lý)", "C. Admit (v): thừa nhận", "D. Admissible (adj): có thể chấp nhận"], structure: "Vị trí đầu câu đóng vai trò làm chủ ngữ chính điều khiển hệ từ 'is' cần một danh từ số ít trừu tượng hệ thống giáo dục.", fault: "Danh từ 'Admittance' chỉ dùng cho việc cho phép đi vào một địa điểm vật lý, không dùng cho hệ thống tuyển sinh học thuật." },
+            { id: 55, root: "QUALIFY", text: "He was turned down for the job because he is _______.", opts: ["unqualified", "qualified", "qualification", "qualifies"], ans: 0, trans: "Anh ấy bị từ chối cho công việc đó bởi vì anh ấy không có đủ trình độ chuyên môn.", meanings: ["A. unqualified (adj): không có đủ trình độ chuyên môn", "B. qualified (adj): có đủ trình độ chuyên môn", "C. qualification (n): bằng cấp, chứng chỉ", "D. qualifies (v): đủ điều kiện"], structure: "Sau liên động từ 'is' cần điền tính từ. Do nguyên nhân bị từ chối công việc 'turned down', tính từ phải mang tiền tố phủ định 'un-'.", fault: "Tính từ tích cực 'qualified' tạo nghĩa mâu thuẫn hoàn toàn với thực tế bị loại hồ sơ xin việc." },
+            { id: 56, root: "JUSTICE", text: "It was _______ of Tom to accuse Bill of having told him a lie.", opts: ["unjust", "justice", "unjustice", "justly"], ans: 0, trans: "Thật không công bằng cho Tom khi đổ lỗi cho Bill là đã nói dối mình.", meanings: ["A. unjust (adj): không công bằng, bất công", "B. justice (n): sự công bằng", "C. unjustice (Từ không tồn tại): viết sai", "D. justly (adv): một cách công bằng"], structure: "Áp dụng mô hình cấu trúc đặc trưng chủ ngữ giả: 'It is/was + tính từ + of someone + to V'. Do đó vị trí này bắt buộc phải là tính từ.", fault: "Danh từ 'justice' vi phạm quy tắc thành tố vị ngữ chủ ngữ giả. Từ 'unjustice' là bẫy chính tả sai hoàn toàn danh từ (danh từ đúng là injustice)." },
+            { id: 57, root: "DEVOTE", text: "He has been constant in his _______ to scientific studies.", opts: ["devotion", "devote", "devoted", "devotedly"], ans: 0, trans: "Anh ấy luôn kiên định trong sự cống hiến của mình cho các nghiên cứu khoa học.", meanings: ["A. devotion (n): sự cống hiến, tận tụy", "B. devote (v): cống hiến", "C. devoted (adj): tận tụy", "D. devotedly (adv): một cách tận tụy"], structure: "Nằm phía sau tính từ sở hữu 'his' bắt buộc phải bổ sung một danh từ làm trung tâm cấu trúc từ ngữ.", fault: "Tính từ hoặc trạng từ không đứng ngay sau tính từ sở hữu gánh vác vị trí bổ ngữ giới từ." },
+            { id: 58, root: "PERFECT", text: "I understand _______ what you are saying.", opts: ["perfectly", "perfect", "perfection", "perfective"], ans: 0, trans: "Tôi hiểu hoàn hảo những gì bạn đang nói.", meanings: ["A. perfectly (adv): một cách hoàn hảo, hoàn toàn", "B. perfect (adj): hoàn hảo", "C. perfection (n): sự hoàn hảo", "D. perfective (adj): thuộc hoàn thành"], structure: "Cần điền một trạng từ (adv) đứng xen giữa bổ nghĩa mức độ cho động từ hành động thường 'understand' ở mệnh đề phía trước.", fault: "Tính từ và danh từ không thể làm bổ ngữ chỉ cách thức cho một động từ hành động đã chia." },
+            { id: 59, root: "APPOINT", text: "Jane’s _______ as a director came as no surprise.", opts: ["appointment", "appoint", "appointee", "appointed"], ans: 0, trans: "Việc bổ nhiệm Jane làm giám đốc không gây ra sự ngạc nhiên nào.", meanings: ["A. appointment (n): sự bổ nhiệm / cuộc hẹn", "B. appoint (v): bổ nhiệm", "C. appointee (n): người được bổ nhiệm", "D. appointed (v-ed)"], structure: "Nằm sau kí hiệu sở hữu cách 'Jane’s' làm chủ ngữ chính của mệnh đề, cần một danh từ hành động trừu tượng chỉ sự việc.", fault: "Danh từ 'appointee' chỉ người nhận chức, đưa vào cấu trúc làm chủ từ sẽ sai hoàn toàn ý nghĩa sự việc." },
+            { id: 60, root: "FRIEND", text: "My colleagues are very pleasant, but the manager is a little _______.", opts: ["unfriendly", "friendly", "friendliness", "friend"], ans: 0, trans: "Đồng nghiệp của tôi rất dễ chịu, nhưng vị quản lý thì hơi không thân thiện.", meanings: ["A. unfriendly (adj): không thân thiện", "B. friendly (adj): thân thiện", "C. friendliness (n): sự thân thiện", "D. friend (n): người bạn"], structure: "Sau động từ nối 'is' và cụm giảm nhẹ mức độ 'a little' cần điền tính từ. Do có liên từ tương phản đối lập 'but' với tính từ tốt 'pleasant', ta chọn từ trái nghĩa mang tiền tố 'un-'.", fault: "Tính từ tích cực 'friendly' triệt tiêu tính chất tương phản mà liên từ 'but' bắt buộc phải truyền tải." },
+            { id: 61, root: "CONVENIENT", text: "7.30 A.M on a Saturday is rather _______ time for an appointment.", opts: ["an inconvenient", "a convenient", "convenience", "conveniently"], ans: 0, trans: "7 giờ 30 phút sáng thứ Bảy là một thời gian khá bất tiện cho một cuộc hẹn.", meanings: ["A. an inconvenient (Mạo từ + tính từ phủ định)", "B. a convenient (Mạo từ + tính từ khẳng định)", "C. convenience (n): sự thuận tiện", "D. conveniently (adv)"], structure: "Bổ nghĩa cho danh từ đếm được số ít 'time' cần tính từ có mạo từ đi kèm sau trạng từ cường hóa 'rather'. Thứ Bảy là ngày nghỉ, hẹn quá sớm 7h30 sáng là điều bất tiện.", fault: "Thiếu mạo từ 'a/an' làm danh từ 'time' bị cô lập sai ngữ pháp, tính từ 'convenient' sai ngữ cảnh thực tế." },
+            { id: 62, root: "REASON", text: "Please don’t be so _______ , I can’t do all the work by myself.", opts: ["unreasonable", "reasonable", "reason", "reasonably"], ans: 0, trans: "Làm ơn đừng quá vô lý như thế, tôi không thể tự mình làm hết mọi việc được.", meanings: ["A. unreasonable (adj): vô lý, quá đáng", "B. reasonable (adj): hợp lý", "C. reason (n/v): lý do / lập luận", "D. reasonably (adv): một cách hợp lý"], structure: "Sau từ chỉ cường độ 'so' đi liền sau động từ mệnh lệnh 'don't be' yêu cầu điền một tính từ vị ngữ mang nghĩa tiêu cực.", fault: "Tính từ 'reasonable' mang ý tốt đẹp, mâu thuẫn trực tiếp với lời phân trần vất vả phía sau câu." },
+            { id: 63, root: "HARM", text: "Many people still refuse to think that smoking is _______.", opts: ["harmful", "harmless", "harm", "harmfully"], ans: 0, trans: "Nhiều người vẫn từ chối nghĩ rằng hút thuốc lá là có hại.", meanings: ["A. harmful (adj): có hại", "B. harmless (adj): vô hại", "C. harm (n/v): tác hại", "D. harmfully (adv)"], structure: "Nằm sau động từ liên kết hệ từ 'is' làm nhiệm vụ định tính chất cho hành vi chủ ngữ 'smoking', bắt buộc điền một tính từ.", fault: "Chọn 'harmless' (vô hại) là sai hoàn toàn bản chất y học khách quan của thuốc lá." },
+            { id: 64, root: "WAKE", text: "I was kept _______ last night by the noise from a party in the flat above.", opts: ["awake", "waken", "awoken", "waking"], ans: 0, trans: "Tôi đã bị giữ cho tỉnh táo không ngủ được đêm qua bởi tiếng ồn từ bữa tiệc ở căn hộ phía trên.", meanings: ["A. awake (adj): tỉnh táo, không ngủ", "B. waken (v): đánh thức", "C. awoken (v3): bị đánh thức", "D. waking (adj): thức tỉnh"], structure: "Áp dụng cấu trúc trạng thái bị động: 'keep + tân ngữ + tính từ'. Từ 'awake' đóng vai trò tính từ trạng thái.", fault: "Các dạng phân từ động từ thường không tạo lập tổ hợp trạng thái tĩnh tự nhiên bằng tính từ gốc hệ thống." },
+            { id: 65, root: "RESIST", text: "An aeroplane has to overcome the _______ air.", opts: ["resistant", "resistance", "resist", "resisting"], ans: 1, trans: "Máy bay phải vượt qua lực cản của không khí.", meanings: ["A. resistant (adj): có tính chống cự", "B. resistance (n): lực cản, sự chống cự", "C. resist (v): chống cự", "D. resisting (v-ing)"], structure: "Tạo lập cụm thuật ngữ vật lý hàng không: 'air resistance' đổi ngược cấu trúc danh từ ghép thành 'the resistance of air' hoặc tính từ ghép, nhưng ở đây đề gốc là 'the (RESIST) air' tức lực cản không khí. Đáp án đúng cấu trúc thuật ngữ là danh từ 'resistance' đặt cạnh để biến đổi ngữ nghĩa hoặc tạo tính từ đặc thù.", fault: "Lưu ý câu này đáp án chuẩn từ loại danh từ tạo cụm danh từ đảo ngữ hoặc tính từ đặc thù khoa học." },
+            { id: 66, root: "ATTENTION", text: "She always listens _______ to what she is told.", opts: ["attentively", "attentive", "attention", "attentiveness"], ans: 0, trans: "Cô ấy luôn lắng nghe một cách chăm chú những gì được bảo.", meanings: ["A. attentively (adv): một cách chăm chú", "B. attentive (adj): chăm chú", "C. attention (n): sự chú ý", "D. attentiveness (n): sự chăm chú"], structure: "Cần một trạng từ (adv) đứng cuối câu để bổ nghĩa phương thức hành động cho động từ thường chỉ hành vi 'listens'.", fault: "Tính từ và danh từ không bổ nghĩa trực tiếp cho cách thức thực hiện của động từ thường." },
+            { id: 67, root: "POET", text: "He regularly writes _______ for our newspaper.", opts: ["poetry", "poet", "poetic", "poetically"], ans: 0, trans: "Anh ấy thường xuyên viết thơ cho tờ báo của chúng tôi.", meanings: ["A. poetry (n không đếm được): thơ ca nói chung", "B. poet (n chỉ người): nhà thơ", "C. poetic (adj): thuộc về thơ ca", "D. poetically (adv): một cách pơ-e-tic"], structure: "Đứng sau động từ thường 'writes' cần một danh từ đóng vai trò tân ngữ chỉ thể loại sản phẩm văn học.", fault: "Không dùng danh từ người 'poet' vào đây vì con người nhà thơ không thể được viết ra trực tiếp bởi động từ write." },
+            { id: 68, root: "ARRIVE", text: "The _______ of the new guests caused trouble to my aunt.", opts: ["arrival", "arrive", "arrivals", "arrived"], ans: 0, trans: "Sự đến nơi của những vị khách mới đã gây ra rắc rối cho dì của tôi.", meanings: ["A. arrival (n số ít): sự đến nơi", "B. arrive (v): đến nơi", "C. arrivals (n số nhiều): các chuyến đến", "D. arrived (v-ed)"], structure: "Cấu trúc danh từ lõi chủ ngữ: 'The + danh từ + of'. Cần điền danh từ hành động sự việc kết thúc bằng đuôi '-al'.", fault: "Động từ thường nguyên mẫu không đi liền sau mạo từ xác định để đứng đầu câu làm chủ ngữ." },
+            { id: 69, root: "CHOOSE", text: "Wearing casual clothes helps students have freedom of _______.", opts: ["choice", "choose", "choices", "chosen"], ans: 0, trans: "Mặc quần áo thường ngày giúp học sinh có sự tự do lựa chọn.", meanings: ["A. choice (n trừu tượng): sự lựa chọn", "B. choose (v): lựa chọn", "C. choices (n số nhiều): các phương án chọn", "D. chosen (v3)"], structure: "Thiết lập cụm danh từ ghép liên kết giới từ cố định: 'freedom of choice' mang nghĩa là quyền tự do lựa chọn.", fault: "Động từ và phân từ không đứng sau giới từ 'of' để cấu tạo cụm thành ngữ danh từ trừu tượng cố định này." },
+            { id: 70, root: "INVENT", text: "Telephone is one of the greatest _______ in 19th century.", opts: ["inventions", "invention", "inventor", "inventors"], ans: 0, trans: "Điện thoại là một trong những phát minh vĩ đại nhất vào thế kỷ 19.", meanings: ["A. inventions (n số nhiều): các phát minh, sáng chế", "B. invention (n số ít): sự phát minh", "C. inventor (n): nhà phát minh", "D. inventors (n số nhiều chỉ người)"], structure: "Áp dụng công thức tập hợp số đông: 'one of the + tính từ so sánh nhất + danh từ số nhiều'. Điện thoại là đồ vật nên chọn danh từ đồ vật 'inventions'.", fault: "Dạng số ít vi phạm cấu trúc ngữ pháp quần thể của cụm trích xuất số lượng nhiều 'one of'." },
+            { id: 71, root: "MUSIC", text: "Van Cao is one of the most famous _______ in Vietnam.", opts: ["musicians", "musician", "music", "musical"], ans: 0, trans: "Văn Cao là một trong những nhạc sĩ nổi tiếng nhất tại Việt Nam.", meanings: ["A. musicians (n số nhiều): các nhạc sĩ", "B. musician (n số ít): nhạc sĩ", "C. music (n): âm nhạc", "D. musical (adj): thuộc âm nhạc"], structure: "Đồng bộ quy tắc ngữ pháp danh từ số nhiều sau cấu trúc quần thể: 'one of the + tính từ so sánh nhất + danh từ số nhiều chỉ người'.", fault: "Dạng số ít 'musician' không đáp ứng đúng yêu cầu ngữ pháp của mô hình tuyển chọn 'one of'." },
+            { id: 72, root: "USE", text: "I think the Internet is a _______ device to get information.", opts: ["useful", "useless", "use", "usefulness"], ans: 0, trans: "Tôi nghĩ Internet là một thiết bị hữu ích để lấy thông tin.", meanings: ["A. useful (adj): hữu ích", "B. useless (adj): vô dụng", "C. use (n/v): sự sử dụng", "D. usefulness (n): sự hữu ích"], structure: "Nằm kẹp giữa mạo từ 'a' và danh từ vật thể 'device' (thiết bị) bắt buộc phải là một tính từ mang ý nghĩa tích cực bổ nghĩa.", fault: "Tính từ tiêu cực 'useless' sai giá trị thực tế lợi ích công nghệ của mạng Internet." },
+            { id: 73, root: "RESPOND", text: "I sent her a letter last month but I have received no _______ from her.", opts: ["response", "respond", "respondent", "responsive"], ans: 0, trans: "Tôi đã gửi cho cô ấy một bức thư vào tháng trước nhưng tôi vẫn chưa nhận được phản hồi nào từ cô ấy.", meanings: ["A. response (n): sự phản hồi, câu trả lời", "B. respond (v): phản hồi", "C. respondent (n): bị đơn / người trả lời", "D. responsive (adj): phản ứng nhanh"], structure: "Đứng sau từ hạn định phủ định 'no' yêu cầu điền danh từ trừu tượng đóng vai trò làm tân ngữ chịu tác động hành vi thu nhận 'received'.", fault: "Động từ và tính từ không đứng làm bổ ngữ tân ngữ trực tiếp sau từ hạn định số lượng 'no'." },
+            { id: 74, root: "NECESSARY", text: "Food and clothing are _______ of life.", opts: ["necessities", "necessity", "necessary", "necessarily"], ans: 0, trans: "Thức ăn và quần áo là những thứ nhu yếu phẩm cần thiết của cuộc sống.", meanings: ["A. necessities (n số nhiều): các nhu yếu phẩm", "B. necessity (n số ít): sự cần thiết", "C. necessary (adj): cần thiết", "D. necessarily (adv): tất yếu"], structure: "Chủ ngữ gồm hai thực thể song hành 'Food and clothing' đi kèm hệ từ số nhiều 'are' đòi hỏi danh từ vị ngữ phải ở dạng số nhiều chỉ danh mục đồ vật.", fault: "Danh từ số ít 'necessity' vi phạm sự tương hợp số lượng đối với chủ từ phức hợp kép." },
+            { id: 75, root: "SOLVE", text: "She can find no _______ to her financial troubles.", opts: ["solution", "solve", "solvable", "solutions"], ans: 0, trans: "Cô ấy không thể tìm thấy giải pháp nào cho những rắc rối tài chính của mình.", meanings: ["A. solution (n số ít): giải pháp", "B. solve (v): giải quyết", "C. solvable (adj): có thể giải quyết", "D. solutions (n số nhiều)"], structure: "Đứng sau từ hạn định lượng từ phủ định 'no' cần điền một danh từ làm tân ngữ. Theo thói quen ngôn ngữ đi liền giới từ 'to', chọn số ít 'solution'.", fault: "Động từ nguyên mẫu không thỏa mãn từ loại đứng sau đại từ hạn định phủ định." },
+            { id: 76, root: "FLY", text: "All _______ to Washington are delayed because of the bad weather.", opts: ["flights", "flight", "fly", "flying"], ans: 0, trans: "Tất cả các chuyến bay đến Washington đều bị hoãn vì thời tiết xấu.", meanings: ["A. flights (n số nhiều): các chuyến bay", "B. flight (n số ít): chuyến bay", "C. fly (v): bay", "D. flying (n/v-ing): việc bay"], structure: "Lượng từ bao quát 'All' đi kèm động từ to be chia số nhiều 'are' bắt buộc danh từ chủ ngữ đứng trước phải ở dạng đếm được số nhiều.", fault: "Dạng số ít 'flight' vi phạm quy tắc hòa hợp số lượng đối với hệ từ số nhiều 'are' của câu." },
+            { id: 77, root: "DESTROY", text: "The _______ of their house left them no place to live.", opts: ["destruction", "destroy", "destructive", "destructively"], ans: 0, trans: "Sự tàn phá ngôi nhà của họ đã khiến họ không còn nơi nào để sống.", meanings: ["A. destruction (n): sự phá hủy, tàn phá", "B. destroy (v): phá hủy", "C. destructive (adj): mang tính hủy diệt", "D. destructively (adv)"], structure: "Cấu trúc chủ từ xác định: 'The + danh từ + of'. Yêu cầu điền danh từ để gánh vác vai trò làm chủ ngữ chính đầu câu.", fault: "Tính từ và trạng từ hoàn toàn sai vị trí cú pháp khi đứng làm thành tố lõi sau mạo từ 'The'." },
+            { id: 78, root: "WE", text: "We all looked _______ after the summer holidays.", opts: ["healthy", "health", "healthily", "unhealthy"], ans: 0, trans: "Tất cả chúng tôi nhìn đều khỏe mạnh sau kỳ nghỉ hè.", meanings: ["A. healthy (adj): khỏe mạnh", "B. health (n): sức khỏe", "C. healthily (adv): một cách khỏe mạnh", "D. unhealthy (adj): không khỏe mạnh"], structure: "Từ 'look' đóng vai trò là một liên động từ trạng thái (linking verb) nên thành tố đi liền sau bắt buộc phải là một tính từ miêu tả thực thể người.", fault: "Trạng từ 'healthily' chỉ bổ nghĩa động từ hành động thường di chuyển, không đi sau động từ nối cảm quan ngoại hình tĩnh." },
+            { id: 79, root: "MAJOR", text: "The _______ of people prefer TV to radio.", opts: ["majority", "major", "majorly", "majored"], ans: 0, trans: "Phần lớn mọi người thích tivi hơn radio.", meanings: ["A. majority (n): phần lớn, số đông", "B. major (adj/n): lớn / chuyên ngành", "C. majorly (adv): cực kỳ nhiều", "D. majored (v-ed)"], structure: "Thiết lập cụm tổ hợp chủ ngữ đếm định lượng cố định: 'The majority of + danh từ số nhiều' mang nghĩa là đa số, phần lớn ai đó.", fault: "Tính từ hoặc trạng từ không đứng kẹp cấu trúc mạo từ và giới từ để thành lập một phân định định lượng." },
+            { id: 80, root: "DEVELOP", text: "The next stage in the _______ of television is interactive TV.", opts: ["development", "develop", "developing", "developed"], ans: 0, trans: "Giai đoạn tiếp theo trong sự phát triển của truyền hình là truyền hình tương tác.", meanings: ["A. development (n): sự phát triển", "B. develop (v): phát triển", "C. developing (adj): đang phát triển", "D. developed (adj): đã phát triển"], structure: "Đứng sau mạo từ 'the' trong cấu trúc giới từ 'in the... of' yêu cầu bổ sung danh từ trừu tượng chỉ tiến trình phát triển vật chất.", fault: "Động từ nguyên mẫu không đứng làm tân ngữ giới từ cố định sau mạo từ xác định." },
+            { id: 81, root: "RELIGIOUS", text: "The country’s official _______ of Malaysia is Islam.", opts: ["religion", "religious", "religions", "religiously"], ans: 0, trans: "Tôn giáo chính thức của quốc gia Malaysia là đạo Hồi.", meanings: ["A. religion (n số ít): tôn giáo", "B. religious (adj): thuộc tôn giáo", "C. religions (n số nhiều): các tôn giáo", "D. religiously (adv)"], structure: "Nằm sau tính từ sở hữu cách khu vực 'country’s' và tính từ định tính 'official', kết hợp với động từ số ít 'is' phía sau, cần danh từ số ít.", fault: "Tính từ gốc đề bài cho vi phạm từ loại cấu tạo chủ từ. Dạng số nhiều vi phạm sự hòa hợp với hệ từ số ít 'is'." },
+            { id: 82, root: "USE", text: "I like this website because it is _______ for me.", opts: ["useful", "useless", "use", "user"], ans: 0, trans: "Tôi thích trang web này bởi vì nó hữu ích đối với tôi.", meanings: ["A. useful (adj): hữu ích", "B. useless (adj): vô dụng", "C. use (n/v): sự sử dụng", "D. user (n): người dùng"], structure: "Đứng sau hệ từ liên kết 'is' yêu cầu điền tính từ. Do thái độ tích cực yêu mến ở vế trước 'I like this website', chọn tính từ mang nghĩa hữu ích.", fault: "Tính từ phủ định 'useless' phá hủy hoàn toàn logic lập luận nguyên nhân hệ quả của liên từ 'because'." },
+            { id: 83, root: "GOOD", text: "I hope to speak English as _______ as my teacher.", opts: ["well", "good", "better", "best"], ans: 0, trans: "Tôi hy vọng có thể nói tiếng Anh tốt như giáo viên của tôi.", meanings: ["A. well (Trạng từ tốt)", "B. good (Tính từ tốt)", "C. better (So sánh hơn)", "D. best (So sánh nhất)"], structure: "Cấu trúc so sánh bằng: 'as + tính/trạng từ + as'. Vì từ loại cần điền chịu trách nhiệm bổ nghĩa cho động từ hành động thường 'speak' nên phải dùng trạng từ 'well'.", fault: "Tính từ 'good' không dùng bổ nghĩa trực tiếp cho động từ hành động thường đã có tân ngữ trong mô hình chuẩn." },
+            { id: 84, root: "PRIDE", text: "He learns very well and his parents are _______ of him.", opts: ["proud", "pride", "proudly", "proudness"], ans: 0, trans: "Cậu ấy học rất tốt và bố mẹ cậu ấy rất tự hào về cậu ấy.", meanings: ["A. proud (adj): tự hào", "B. pride (n): niềm tự hào", "C. proudly (adv): một cách tự hào", "D. proudness (n): sự kiêu hãnh"], structure: "Thiết lập tổ hợp tính từ đi liền giới từ quy định: 'be proud of someone'. Đứng sau động từ nối số nhiều 'are'.", fault: "Danh từ gốc đề bài cho không liên kết trực tiếp giới từ 'of' khi đứng làm vị ngữ sau to be trong ngữ cảnh này." },
+            { id: 85, root: "DESIGN", text: "Many _______ have made lots of changes to The Ao Dai.", opts: ["designers", "designer", "designs", "designed"], ans: 0, trans: "Nhiều nhà thiết kế đã thực hiện rất nhiều thay đổi đối với chiếc Áo Dài.", meanings: ["A. designers (n số nhiều): các nhà thiết kế", "B. designer (n số ít): nhà thiết kế", "C. designs (n số nhiều/v): các bản thiết kế", "D. designed (v-ed)"], structure: "Từ chỉ lượng số nhiều 'Many' kết hợp trợ động từ số nhiều 'have' yêu cầu danh từ chủ ngữ chỉ người thực hiện hành động phải ở dạng số nhiều.", fault: "Dạng số ít 'designer' lỗi ngữ pháp số lượng, danh từ chỉ vật 'designs' không tự thực hiện hành vi thay đổi áo dài." },
+            { id: 86, root: "HOME", text: "Thousands of people have been made _______ by the flood.", opts: ["homeless", "home", "homely", "homemade"], ans: 0, trans: "Hàng ngàn người đã bị làm cho mất nhà cửa (vô gia cư) do trận lũ lụt.", meanings: ["A. homeless (adj): vô gia cư, mất nhà cửa", "B. home (n): ngôi nhà", "C. homely (adj): giản dị, thuộc gia đình", "D. homemade (adj): tự làm tại nhà"], structure: "Áp dụng cấu trúc hệ quả bị động: 'make + tân ngữ + tính từ'. Do tác động thiên tai tàn phá 'by the flood', người dân phải chịu tình cảnh mất nhà.", fault: "Các tính từ khác hoàn toàn sai lệch thực tế tai ương tổn thất do lũ lụt gây ra cho con người." },
+            { id: 87, root: "DISASTER", text: "The earthquake in Kobe in 1995 caused _______ damage.", opts: ["disastrous", "disaster", "disasters", "disastrously"], ans: 0, trans: "Trận động đất ở Kobe năm 1995 đã gây ra thiệt hại thảm khốc.", meanings: ["A. disastrous (adj): thảm khốc, tai hại", "B. disaster (n số ít): thảm họa", "C. disasters (n số nhiều): các thảm họa", "D. disastrously (adv): một cách thảm khốc"], structure: "Vị trí đứng liền trước bổ nghĩa tính chất quy mô tổn thất cho danh từ không đếm được 'damage' bắt buộc dùng một tính từ.", fault: "Danh từ gốc hoặc trạng từ không có chức năng làm định ngữ đứng liền trước một danh từ khác để mô tả mức độ." },
+            { id: 88, root: "TRADITION", text: "_______ , people eat sticky rice cakes at Tet.", opts: ["Traditionally", "Traditional", "Tradition", "Traditions"], ans: 0, trans: "Theo truyền thống, người ta ăn bánh chưng vào ngày Tết.", meanings: ["A. Traditionally (adv): theo truyền thống", "B. Traditional (adj): thuộc về truyền thống", "C. Tradition (n): truyền thống", "D. Traditions (n số nhiều)"], structure: "Vị trí đứng độc lập đầu câu và được phân tách bằng dấu phẩy yêu cầu điền một trạng từ liên kết (sentence adverb) bổ nghĩa toàn diện.", fault: "Dạng tính từ hoặc danh từ không có tư cách cú pháp đứng cô lập đầu câu có dấu phẩy đi kèm." },
+            { id: 89, root: "EDITION", text: "He is an _______ of this newspaper.", opts: ["editor", "edition", "edit", "editorial"], ans: 0, trans: "Anh ấy là một biên tập viên của tờ báo này.", meanings: ["A. editor (n chỉ người): biên tập viên", "B. edition (n chỉ vật): phiên bản xuất bản", "C. edit (v): chỉnh sửa", "D. editorial (n/adj): bài xã luận"], structure: "Đi sau mạo từ số ít 'an' yêu cầu một danh từ số ít chỉ danh tính con người bắt đầu bằng một nguyên âm (e) để đồng nhất nhân xưng chủ từ 'He'.", fault: "Danh từ gốc chỉ vật 'edition' đưa vào câu tạo nghĩa vô lý: Con người là một tập sách xuất bản." },
+            { id: 90, root: "AVAIL", text: "This book is not _______ .", opts: ["available", "availability", "unavailable", "avail"], ans: 0, trans: "Cuốn sách này không có sẵn (hoặc không thể mua được lúc này).", meanings: ["A. available (adj): có sẵn, có thể mua/dùng", "B. availability (n): sự có sẵn", "C. unavailable (adj): không có sẵn", "D. avail (v/n): có ích"], structure: "Sau phó từ phủ định 'not' đi liền sau động từ liên kết 'is' cần điền tính từ vị ngữ miêu tả trạng thái hàng hóa.", fault: "Do đã có sẵn từ phủ định 'not' ở trước, nếu điền tiếp tính từ phủ định 'unavailable' sẽ tạo lỗi phủ định kép sai nghĩa." },
+            { id: 91, root: "ENJOY", text: "It's an _______ day.", opts: ["enjoyable", "enjoy", "enjoyment", "enjoyably"], ans: 0, trans: "Đó là một ngày dễ chịu đầy thú vị.", meanings: ["A. enjoyable (adj): thú vị, dễ chịu", "B. enjoy (v): tận hưởng", "C. enjoyment (n): sự thích thú", "D. enjoyably (adv)"], structure: "Nằm kẹp giữa cấu trúc mạo từ số ít 'an' và danh từ thời gian 'day' bắt buộc phải là một tính từ định tính miêu tả ngày đó.", fault: "Động từ nguyên mẫu hoặc danh từ trừu tượng không làm định ngữ bổ trợ trực tiếp đứng trước danh từ đếm được số ít." },
+            { id: 92, root: "EXACT", text: "He _______ answered these questions.", opts: ["exactly", "exact", "exactness", "exacting"], ans: 0, trans: "Anh ấy đã trả lời những câu hỏi này một cách chính xác.", meanings: ["A. exactly (adv): một cách chính xác", "B. exact (adj): chính xác", "C. exactness (n): độ chính xác", "D. exacting (adj): khắt khe"], structure: "Cần điền trạng từ (adv) đứng xen kẽ kẹp giữa chủ ngữ người và động từ hành động thường quá khứ 'answered' để bổ nghĩa.", fault: "Tính từ không đứng kẹp giữa chủ từ và động từ thường đã chia để bổ trợ cách thức thực hiện hành vi." },
+            { id: 93, root: "DISTANT", text: "You have to keep your _______ from that snake.", opts: ["distance", "distant", "distantly", "distancing"], ans: 0, trans: "Bạn phải giữ khoảng cách với con rắn đó.", meanings: ["A. distance (n): khoảng cách, cự ly", "B. distant (adj): xa xôi", "C. distantly (adv): một cách xa xôi", "D. distancing (n): hành vi giãn cách"], structure: "Nằm sau tính từ sở hữu 'your' yêu cầu điền danh từ làm tân ngữ trực tiếp. Tạo cụm từ cố định: 'keep one's distance from' (giữ khoảng cách).", fault: "Tính từ gốc đề bài cho không gánh vác vai trò vật thể đích đến của hành động đứng sau từ sở hữu." },
+            { id: 94, root: "WARM", text: "They are _______ greeted by the native.", opts: ["warmly", "warm", "warmth", "warming"], ans: 0, trans: "Họ được chào đón một cách nồng hậu bởi người bản xứ.", meanings: ["A. warmly (adv): một cách nồng hậu", "B. warm (adj): ấm áp", "C. warmth (n): hơi ấm", "D. warming (n): sự làm ấm"], structure: "Nằm kẹp giữa động từ to be hệ bị động 'are' và quá khứ phân từ hành động 'greeted', cần điền trạng từ (adv) chỉ cách thức.", fault: "Tính từ không đứng chen vào cấu trúc phân từ bị động thường để bổ nghĩa trực tiếp cho hành động." },
+            { id: 95, root: "PERFORM", text: "The _______ by the little girl was a great hit.", opts: ["performance", "perform", "performer", "performing"], ans: 0, trans: "Màn biểu diễn của cô bé đã tạo nên một tiếng vang lớn.", meanings: ["A. performance (n chỉ vật thể sự việc): màn biểu diễn", "B. perform (v): biểu diễn", "C. performer (n chỉ người): người biểu diễn", "D. performing (v-ing)"], structure: "Đứng đầu câu làm chủ ngữ sau mạo từ 'The' và trước cụm giới từ 'by...'. Hành vi tạo ra tiếng vang lớn khách quan là sản phẩm nghệ thuật.", fault: "Không chọn danh từ người 'performer' vì nếu dịch 'người biểu diễn bởi cô bé' sẽ hoàn toàn sai cấu trúc ngữ nghĩa." },
+            { id: 96, root: "APPEAR", text: "Some young people today have a very strange _______ .", opts: ["appearance", "appear", "disappeared", "appearing"], ans: 0, trans: "Một số người trẻ ngày nay có một diện mạo bề ngoài rất kỳ lạ.", meanings: ["A. appearance (n): diện mạo, ngoại hình", "B. appear (v): xuất hiện", "C. disappeared (v-ed)", "D. appearing (v-ing)"], structure: "Đứng cuối câu làm tân ngữ trực tiếp đứng sau tính từ bổ nghĩa 'strange' nằm trong cụm từ 'a very strange...', yêu cầu một danh từ.", fault: "Động từ hành động không đứng làm bổ ngữ chịu tác động cuối cụm danh từ định tính miêu tả ngoại hình." },
+            { id: 97, root: "NECESSITY", text: "You don't have to do that work. In other words, it's _______ for you.", opts: ["unnecessary", "necessary", "necessity", "unnecessarily"], ans: 0, trans: "Bạn không phải làm công việc đó. Nói cách khác, nó không cần thiết đối với bạn.", meanings: ["A. unnecessary (adj): không cần thiết", "B. necessary (adj): cần thiết", "C. necessity (n): sự cần thiết", "D. unnecessarily (adv): một cách không cần thiết"], structure: "Sau cấu trúc động từ nối 'it's' cần tính từ. Căn cứ cụm dẫn đường 'You don't have to' (Bạn không bắt buộc phải làm), suy ra tính từ mang nghĩa phủ định.", fault: "Tính từ khẳng định 'necessary' làm đảo lộn hoàn toàn định hướng giải thích của cụm từ nối 'In other words'." },
+            { id: 98, root: "INFORM", text: "Thanks to television, people can get the latest _______ around the world quickly.", opts: ["information", "informative", "inform", "informed"], ans: 0, trans: "Nhờ có tivi, người ta có thể nhận được thông tin mới nhất trên toàn thế giới một cách nhanh chóng.", meanings: ["A. information (n): thông tin", "B. informative (adj): nhiều thông tin", "C. inform (v): thông báo", "D. informed (adj): có hiểu biết"], structure: "Đứng sau tính từ so sánh nhất 'the latest' đóng vai trò danh từ trung tâm làm tân ngữ trực tiếp của hành động thu nhận 'get'.", fault: "Tính từ và động từ không đứng làm tân ngữ chịu tác động trực tiếp của động từ hành động thường." },
+            { id: 99, root: "INCREASE", text: "The Internet has _______ developed and became part of our daily life.", opts: ["increasingly", "increased", "increase", "increasing"], ans: 0, trans: "Internet đã ngày càng phát triển và trở thành một phần trong cuộc sống hàng ngày của chúng ta.", meanings: ["A. increasingly (adv): ngày càng tăng, ngày một hơn", "B. increased (v-ed/adj): đã tăng lên", "C. increase (v/n): tăng lên / sự tăng", "D. increasing (adj): đang tăng"], structure: "Cần điền một trạng từ (adv) đứng xen kẽ bổ trợ trạng thái kẹp giữa trợ động từ 'has' và phân từ động từ thường đã chia 'developed'.", fault: "Tính từ hoặc động từ nguyên mẫu không thể đứng chen giữa cấu trúc hoàn thành để bổ nghĩa mức độ tiến hóa hành động." },
+            { id: 100, root: "COMPETE", text: "We have to keep our costs as small as possible. We have so many _______ trying to take our customers away", opts: ["competitors", "competitor", "competition", "competitive"], ans: 0, trans: "Chúng ta phải giữ chi phí thấp nhất có thể. Chúng ta có quá nhiều đối thủ cạnh tranh đang cố gắng giành lấy khách hàng.", meanings: ["A. competitors (n số nhiều): các đối thủ cạnh tranh", "B. competitor (n số ít): đối thủ cạnh tranh", "C. competition (n): sự cạnh tranh / cuộc thi", "D. competitive (adj): mang tính cạnh tranh"], structure: "Cụm từ hạn định lượng từ số nhiều 'so many' bắt buộc điều khiển danh từ phía sau ở dạng đếm được số nhiều. Phải là danh từ chỉ người hành động tranh giành khách.", fault: "Dạng số ít lỗi lượng từ ngữ pháp. Danh từ trừu tượng 'competition' không tự thực hiện hành vi lôi kéo khách hàng hữu hình." }
+        ];
+
+        let stateUserAnswers = {};
+        const activeQuizList = [...rawQuizDatabase];
+
+        // Thuật toán shuffle xáo trộn ngẫu nhiên đáp án A, B, C, D khi tải trang
+        function shuffleOptions() {
+            activeQuizList.forEach(item => {
+                const originalCorrectText = item.opts[item.ans];
+                for (let i = item.opts.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [item.opts[i], item.opts[j]] = [item.opts[j], item.opts[i]];
+                }
+                item.ans = item.opts.indexOf(originalCorrectText);
+            });
+        }
+
+        // Khởi tạo bộ âm thanh Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        function playGamificationSound(isCorrect) {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            const osc = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            if (isCorrect) {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                osc.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(220, audioContext.currentTime);
+                osc.frequency.linearRampToValueAtTime(110, audioContext.currentTime + 0.25);
+                gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            }
+        }
+
+        // Hiệu ứng bùng nổ Pháo giấy Confetti dùng Canvas
+        const confettiCanvas = document.getElementById('canvas-confetti');
+        const ctxConfetti = confettiCanvas.getContext('2d');
+        let confettiElements = [];
+        let rAFId = null;
+
+        function updateCanvasSize() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', updateCanvasSize);
+        updateCanvasSize();
+
+        function triggerConfettiBurst() {
+            confettiElements = [];
+            const colors = ['#8854C0', '#FDCB6E', '#00C9A7', '#FF7675', '#00D26A'];
+            for (let i = 0; i < 80; i++) {
+                confettiElements.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * confettiCanvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+                    tiltAngle: 0
+                });
+            }
+            if(rAFId) cancelAnimationFrame(rAFId);
+            animateConfettiStream();
+        }
+
+        function animateConfettiStream() {
+            ctxConfetti.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            let activeAnimation = false;
+            confettiElements.forEach((p) => {
+                p.tiltAngle += p.tiltAngleIncremental;
+                p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                p.x += Math.sin(p.tiltAngle);
+                p.tilt = Math.sin(p.tiltAngle - p.r / 2) * 3;
+
+                if (p.y <= confettiCanvas.height) {
+                    activeAnimation = true;
+                }
+
+                ctxConfetti.beginPath();
+                ctxConfetti.lineWidth = p.r;
+                ctxConfetti.strokeStyle = p.color;
+                ctxConfetti.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                ctxConfetti.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                ctxConfetti.stroke();
+            });
+            if (activeAnimation) {
+                rAFId = requestAnimationFrame(animateConfettiStream);
+            } else {
+                ctxConfetti.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }
+        }
+
+        // Khởi tạo giao diện câu hỏi
+        function renderQuizInterface() {
+            const wrapper = document.getElementById('quiz-wrapper');
+            wrapper.innerHTML = "";
+
+            activeQuizList.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                card.id = `card-q-${index}`;
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'question-title';
+                titleDiv.innerHTML = `<span class="question-number">Câu ${item.id}</span> Gốc từ: <strong>(${item.root})</strong> — ${item.text}`;
+                card.appendChild(titleDiv);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options-container';
+
+                item.opts.forEach((optText, optIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `option-btn opt-btn-${index}`;
+                    const labelLetter = String.fromCharCode(65 + optIdx);
+                    btn.innerText = `${labelLetter}. ${optText}`;
+                    btn.onclick = () => selectAnswer(index, optIdx);
+                    optionsDiv.appendChild(btn);
+                });
+                card.appendChild(optionsDiv);
+
+                const expCard = document.createElement('div');
+                expCard.className = 'explanation-card';
+                expCard.id = `explanation-${index}`;
+                
+                expCard.innerHTML = `
+                    <div class="exp-section"><span class="exp-badge">1. Dịch nghĩa câu:</span> "${item.trans}"</div>
+                    <div class="exp-section"><span class="exp-badge">2. Ý nghĩa của 4 đáp án:</span><br>${item.meanings.join('<br>')}</div>
+                    <div class="exp-section"><span class="exp-badge">3. Tại sao chọn đáp án đúng?</span> ${item.structure}</div>
+                    <div class="exp-section"><span class="exp-badge">4. Tại sao các đáp án khác sai?</span> ${item.fault}</div>
+                `;
+                card.appendChild(expCard);
+                wrapper.appendChild(card);
+            });
+        }
+
+        // Xử lý tương tác lựa chọn đáp án
+        function selectAnswer(qIndex, selectedIdx) {
+            if (stateUserAnswers[qIndex] !== undefined) return;
+
+            stateUserAnswers[qIndex] = selectedIdx;
+            const targetQuestion = activeQuizList[qIndex];
+            const correctIdx = targetQuestion.ans;
+
+            const buttons = document.querySelectorAll(`.opt-btn-${qIndex}`);
+            buttons.forEach((btn, idx) => {
+                btn.classList.add('disabled');
+                if (idx === correctIdx) {
+                    btn.classList.add('correct-choice');
+                }
+                if (idx === selectedIdx && selectedIdx !== correctIdx) {
+                    btn.classList.add('wrong-choice');
+                }
+            });
+
+            const targetCard = document.getElementById(`card-q-${qIndex}`);
+            if (selectedIdx === correctIdx) {
+                playGamificationSound(true);
+                triggerConfettiBurst();
+            } else {
+                playGamificationSound(false);
+                targetCard.classList.add('shake-animation');
+                setTimeout(() => {
+                    targetCard.classList.remove('shake-animation');
+                }, 400);
+            }
+
+            document.getElementById(`explanation-${qIndex}`).style.display = 'block';
+        }
+
+        // Chức năng nộp bài tổng kết
+        function evaluateQuiz() {
+            let correctCount = 0;
+            activeQuizList.forEach((item, index) => {
+                if (stateUserAnswers[index] === item.ans) {
+                    correctCount++;
+                }
+            });
+
+            const totalQuestions = activeQuizList.length;
+            const scorePercent = (correctCount / totalQuestions) * 100;
+
+            document.getElementById('final-score').innerText = `${correctCount} / ${totalQuestions}`;
+            const commentBox = document.getElementById('teacher-comment');
+
+            if (scorePercent < 50) {
+                commentBox.innerText = "Điểm lần này chưa cao lắm, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+            } else if (scorePercent >= 60 && scorePercent <= 80) {
+                commentBox.innerText = "Con đã có tiến bộ khá ổn rồi, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+            } else {
+                commentBox.innerText = "Làm tốt lắm, con cố gắng ring điểm 10 ở lần sau nha!";
+                triggerConfettiBurst();
+            }
+
+            document.getElementById('result-overlay').classList.add('active');
+        }
+
+        function closePopup() {
+            document.getElementById('result-overlay').classList.remove('active');
+        }
+
+        function resetQuiz() {
+            stateUserAnswers = {};
+            closePopup();
+            shuffleOptions();
+            renderQuizInterface();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = () => {
+            shuffleOptions();
+            renderQuizInterface();
+        };
+    </script>
+</body>
+</html>
